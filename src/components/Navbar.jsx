@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Link } from "react-router";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -31,12 +31,48 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> Home  </Link>
-            <Link to="/about" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> About  </Link>
-            <Link to="/events" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> Events  </Link>
-            <Link to="/activities" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> Activities  </Link>
-            <Link to="/membership" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> Membership  </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"> Contact  </Link>
+            <Link
+              to="/"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              Home{" "}
+            </Link>
+            <Link
+              to="/about"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              About{" "}
+            </Link>
+            <Link
+              to="/events"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              Events{" "}
+            </Link>
+            <Link
+              to="/activities"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              Activities{" "}
+            </Link>
+            <Link
+              to="/membership"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              Membership{" "}
+            </Link>
+            <Link
+              to="/contact"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+            >
+              {" "}
+              Contact{" "}
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -70,13 +106,13 @@ const Navbar = () => {
               >
                 About
               </a>
-              
+
               <a
                 href="#"
                 className="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium"
               >
                 Events
-              </a>  
+              </a>
 
               <a
                 href="#"
@@ -91,15 +127,13 @@ const Navbar = () => {
               >
                 Membership
               </a>
-              
+
               <a
                 href="#"
                 className="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium"
               >
                 Contact
               </a>
-              
-              
             </div>
           </div>
         )}

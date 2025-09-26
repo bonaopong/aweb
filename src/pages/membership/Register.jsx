@@ -7,12 +7,19 @@ import CheckboxField from "@/components/CheckboxField";
 import MultiSelectField from "@/components/MultiSelectField";
 import FileUploadField from "@/components/FileUploadField";
 import TextareaField from "@/components/TextareaField";
+import { Link } from "react-router";
 
 export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert("Form submitted!");
   };
+
+  // Membership type state
+  const [membershipType, setMembershipType] = useState("");
+  const isMembershipChecked =
+    membershipType === "individual" || membershipType === "family";
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   const insuranceOptions = [
     {
@@ -190,14 +197,6 @@ export default function Register() {
 
             {/* Other Information */}
             <FormSection title="Other Information">
-              <CheckboxField id="active" label="Active?" />
-              <CheckboxField id="specialExpertise" label="Special Expertise?" />
-              <TextareaField
-                id="remarks"
-                label="Remarks"
-                placeholder="Enter remarks here..."
-              />
-
               <MultiSelectField
                 id="languagesSpoken"
                 label="Languages Spoken"
@@ -215,7 +214,7 @@ export default function Register() {
             {/* Insurance Payment */}
             <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-700 border-b-2 border-gray-200 pb-2 mb-6">
-                Insurance Payment
+                Insurance
               </h2>
               {/* Personal Insurance */}
               <div>
@@ -379,21 +378,77 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Insurance Payment */}
-            <FormSection title="Membership Type">
-              <CheckboxField
-                id="individualMembership"
-                label="Individual Membership"
-              />
-              <CheckboxField
-                id="familyMembership"
-                label="Family Membership (Includes parent/guardian)"
-              />
-            </FormSection>
+            {/* Membership Type */}
+            <div>
+              <FormSection
+                title="Membership Type"
+                description="Choose one of these if you wish to register as a member of the association."
+              >
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={membershipType === "individual"}
+                    onChange={() =>
+                      setMembershipType(
+                        membershipType === "individual" ? "" : "individual"
+                      )
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Individual Membership
+                  </span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={membershipType === "family"}
+                    onChange={() =>
+                      setMembershipType(
+                        membershipType === "family" ? "" : "family"
+                      )
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Family Membership (Includes parent/guardian)
+                  </span>
+                </label>
+              </FormSection>
+
+              <label className="flex space-x-2 -mt-3">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  disabled={!isMembershipChecked}
+                  className="h-4 w-4"
+                />
+                <span
+                  className={`text-sm flex-1 -mt-0.5 ${
+                    !isMembershipChecked ? "text-gray-400" : "text-gray-700"
+                  }`}
+                >
+                  By ticking, I wish to apply for membership of this association
+                  and agree to be bound by its by-laws. I also agree to attend
+                  meetings and pay my dues promptly.
+                </span>
+              </label>
+            </div>
 
             <CheckboxField
-              id="agreeTerms"
-              label="By ticking, you wish to apply for membership of this mentioned association and agree to bound by the bye-laws of LECA. I also agree to attend meetings and pay my dues promptly."
+              id="generalTerms"
+              className="mt-10"
+              label={
+                <div>
+                  By ticking, I agree to the{" "}
+                  <Link href="/terms" className="text-blue-600 hover:underline">
+                    terms and conditions
+                  </Link>{" "}
+                  of this association.
+                </div>
+              }
             />
 
             {/* Submit Button */}

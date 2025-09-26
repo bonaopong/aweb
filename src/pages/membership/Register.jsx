@@ -1,80 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import FormSection from "@/components/FormSection";
 import SelectField from "@/components/SelectField";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
-
-// New reusable components
-function CheckboxField({ id, label }) {
-  return (
-    <div className="flex items-center space-x-2">
-      <input id={id} name={id} type="checkbox" className="h-4 w-4" />
-      <label htmlFor={id} className="text-sm text-gray-700">
-        {label}
-      </label>
-    </div>
-  );
-}
-
-function TextareaField({ id, label, placeholder }) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <textarea
-        id={id}
-        name={id}
-        rows={3}
-        placeholder={placeholder}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
-      />
-    </div>
-  );
-}
-
-function FileUploadField({ id, label }) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        id={id}
-        name={id}
-        type="file"
-        className="mt-1 block w-full text-sm text-gray-700"
-      />
-    </div>
-  );
-}
-
-function MultiSelectField({ id, label, options }) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <select
-        id={id}
-        name={id}
-        multiple
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-      >
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
+import CheckboxField from "@/components/CheckboxField";
+import MultiSelectField from "@/components/MultiSelectField";
+import FileUploadField from "@/components/FileUploadField";
+import TextareaField from "@/components/TextareaField";
+import { Link } from "react-router";
 
 export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert("Form submitted!");
+  };
+
+  // Membership type state
+  const [membershipType, setMembershipType] = useState("");
+  const isMembershipChecked =
+    membershipType === "individual" || membershipType === "family";
+  const [agreeTerms, setAgreeTerms] = useState(false);
+
+  const insuranceOptions = [
+    {
+      id: "enterpriseA",
+      label: "Enterprise Insurance Category A",
+      company: "enterprise",
+    },
+    {
+      id: "enterpriseB",
+      label: "Enterprise Insurance Category B",
+      company: "enterprise",
+    },
+    { id: "starA", label: "Star Assurance Category A", company: "star" },
+    { id: "starB", label: "Star Assurance Category B", company: "star" },
+  ];
+
+  // State for showing insurance options
+  const [personalInsurance, setPersonalInsurance] = useState(false);
+  const [parentGuardianInsurance, setParentGuardianInsurance] = useState(false);
+  // State for selected insurance (one per company per group)
+  const [personalSelection, setPersonalSelection] = useState({
+    enterprise: "",
+    star: "",
+  });
+  const [parentSelection, setParentSelection] = useState({
+    enterprise: "",
+    star: "",
+  });
+
+  const handleInsuranceChange = (group, company, value) => {
+    if (group === "personal") {
+      setPersonalSelection((prev) => ({
+        ...prev,
+        [company]: prev[company] === value ? "" : value,
+      }));
+    } else {
+      setParentSelection((prev) => ({
+        ...prev,
+        [company]: prev[company] === value ? "" : value,
+      }));
+    }
+  };
+
+  // Clear child selections when parent is unchecked
+  const handlePersonalInsuranceChange = (checked) => {
+    setPersonalInsurance(checked);
+    if (!checked) {
+      setPersonalSelection({ enterprise: "", star: "" });
+    }
+  };
+  const handleParentGuardianInsuranceChange = (checked) => {
+    setParentGuardianInsurance(checked);
+    if (!checked) {
+      setParentSelection({ enterprise: "", star: "" });
+    }
   };
 
   return (
@@ -100,6 +100,8 @@ export default function Register() {
               <InputField id="surname" label="Surname" />
               <InputField id="firstName" label="First Name" />
               <InputField id="otherNames" label="Other Names" />
+              <InputField id="nickName" label="Nick Name" />
+              <div />
               <InputField id="dateOfBirth" label="Date of Birth" type="date" />
               <SelectField id="gender" label="Gender">
                 <option value="">Select Gender...</option>
@@ -135,8 +137,6 @@ export default function Register() {
 
             {/* Identification & Contact */}
             <FormSection title="Identification & Contact">
-              <InputField id="personId" label="Person ID" />
-              <InputField id="nickName" label="Nick Name" />
               <InputField id="nationalId" label="National ID" />
               <InputField id="ssn" label="Social Security No." />
               <InputField id="contactNos" label="Contact Numbers" />
@@ -165,7 +165,7 @@ export default function Register() {
                 <option>University Degree</option>
                 <option>Postgraduate</option>
               </SelectField>
-              <InputField id="courseStudied" label="Course Studied" />
+              <InputField id="courseStudied" label="Courses Studied" />
             </FormSection>
 
             {/* Family & Kin */}
@@ -197,25 +197,253 @@ export default function Register() {
 
             {/* Other Information */}
             <FormSection title="Other Information">
-              <CheckboxField id="active" label="Active?" />
-              <CheckboxField id="specialExpertise" label="Special Expertise?" />
               <MultiSelectField
                 id="languagesSpoken"
                 label="Languages Spoken"
                 options={["TWI", "GA", "EWE", "ENGLISH", "HAUSA"]}
               />
-              <FileUploadField id="picture" label="Picture" />
-              <TextareaField
-                id="products"
-                label="Products"
-                placeholder="List products here..."
-              />
-              <TextareaField
-                id="remarks"
-                label="Remarks"
-                placeholder="Enter remarks here..."
-              />
+              <FileUploadField id="picture" label="Picture" accept="image/*" />
             </FormSection>
+
+            {/* Insurance Payment */}
+            <div className="mb-10">
+              <h2 className="text-xl font-semibold text-gray-700 border-b-2 border-gray-200 pb-2 mb-6">
+                Insurance
+              </h2>
+              {/* Personal Insurance */}
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input
+                    id="personalInsurance"
+                    type="checkbox"
+                    checked={personalInsurance}
+                    onChange={(e) =>
+                      handlePersonalInsuranceChange(e.target.checked)
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    I would like to purchase personal insurance through LECA
+                  </span>
+                </label>
+                {personalInsurance && (
+                  <div className="ml-8 mt-2 space-y-2">
+                    {/* Enterprise */}
+                    <div className="font-medium text-gray-600 text-xs mb-1">
+                      Enterprise Insurance
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {insuranceOptions
+                        .filter((opt) => opt.company === "enterprise")
+                        .map((opt) => (
+                          <label
+                            key={opt.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={personalSelection.enterprise === opt.id}
+                              onChange={() =>
+                                handleInsuranceChange(
+                                  "personal",
+                                  "enterprise",
+                                  opt.id
+                                )
+                              }
+                              className="h-4 w-4"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {opt.label}
+                            </span>
+                          </label>
+                        ))}
+                    </div>
+                    {/* Star Assurance */}
+                    <div className="font-medium text-gray-600 text-xs mt-3 mb-1">
+                      Star Assurance
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {insuranceOptions
+                        .filter((opt) => opt.company === "star")
+                        .map((opt) => (
+                          <label
+                            key={opt.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={personalSelection.star === opt.id}
+                              onChange={() =>
+                                handleInsuranceChange(
+                                  "personal",
+                                  "star",
+                                  opt.id
+                                )
+                              }
+                              className="h-4 w-4"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {opt.label}
+                            </span>
+                          </label>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="my-5" />
+              {/* Parent/Guardian Insurance */}
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input
+                    id="parentGuardianInsurance"
+                    type="checkbox"
+                    checked={parentGuardianInsurance}
+                    onChange={(e) =>
+                      handleParentGuardianInsuranceChange(e.target.checked)
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    I would like to purchase insurance for my parent(s)/guardian
+                    through LECA
+                  </span>
+                </label>
+                {parentGuardianInsurance && (
+                  <div className="ml-8 mt-2 space-y-2">
+                    {/* Enterprise */}
+                    <div className="font-medium text-gray-600 text-xs mb-1">
+                      Enterprise Insurance
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {insuranceOptions
+                        .filter((opt) => opt.company === "enterprise")
+                        .map((opt) => (
+                          <label
+                            key={opt.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={parentSelection.enterprise === opt.id}
+                              onChange={() =>
+                                handleInsuranceChange(
+                                  "parent",
+                                  "enterprise",
+                                  opt.id
+                                )
+                              }
+                              className="h-4 w-4"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {opt.label}
+                            </span>
+                          </label>
+                        ))}
+                    </div>
+                    {/* Star Assurance */}
+                    <div className="font-medium text-gray-600 text-xs mt-3 mb-1">
+                      Star Assurance
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {insuranceOptions
+                        .filter((opt) => opt.company === "star")
+                        .map((opt) => (
+                          <label
+                            key={opt.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={parentSelection.star === opt.id}
+                              onChange={() =>
+                                handleInsuranceChange("parent", "star", opt.id)
+                              }
+                              className="h-4 w-4"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {opt.label}
+                            </span>
+                          </label>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Membership Type */}
+            <div>
+              <FormSection
+                title="Membership Type"
+                description="Choose one of these if you wish to register as a member of the association."
+              >
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={membershipType === "individual"}
+                    onChange={() =>
+                      setMembershipType(
+                        membershipType === "individual" ? "" : "individual"
+                      )
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Individual Membership
+                  </span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={membershipType === "family"}
+                    onChange={() =>
+                      setMembershipType(
+                        membershipType === "family" ? "" : "family"
+                      )
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Family Membership (Includes parent/guardian)
+                  </span>
+                </label>
+              </FormSection>
+
+              <label className="flex space-x-2 -mt-3">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  disabled={!isMembershipChecked}
+                  className="h-4 w-4"
+                />
+                <span
+                  className={`text-sm flex-1 -mt-0.5 ${
+                    !isMembershipChecked ? "text-gray-400" : "text-gray-700"
+                  }`}
+                >
+                  By ticking, I wish to apply for membership of this association
+                  and agree to be bound by its by-laws. I also agree to attend
+                  meetings and pay my dues promptly.
+                </span>
+              </label>
+            </div>
+
+            <CheckboxField
+              id="generalTerms"
+              className="mt-10"
+              label={
+                <div>
+                  By ticking, I agree to the{" "}
+                  <Link href="/terms" className="text-blue-600 hover:underline">
+                    terms and conditions
+                  </Link>{" "}
+                  of this association.
+                </div>
+              }
+            />
 
             {/* Submit Button */}
             <div className="mt-8 pt-6 border-t border-gray-200">

@@ -203,12 +203,6 @@ export default function Register() {
                 options={["TWI", "GA", "EWE", "ENGLISH", "HAUSA"]}
               />
               <FileUploadField id="picture" label="Picture" accept="image/*" />
-
-              {/* <TextareaField
-                id="products"
-                label="Products"
-                placeholder="List products here..."
-              /> */}
             </FormSection>
 
             {/* Insurance Payment */}
